@@ -9,6 +9,21 @@ import numpy as np
 import joblib
 import sys
 from pathlib import Path
+import warnings
+
+# Ignore all warnings
+warnings.filterwarnings("ignore")
+
+# Ignore specific warning types
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore", category=RuntimeWarning)
+
+# Ignore warnings from specific modules
+warnings.filterwarnings("ignore", module="matplotlib")
+
+# Ignore specific messages
+warnings.filterwarnings("ignore", message=".*some specific text.*")
 
 def process_mri(input_file, output_dir, model_path=None, verbose=False, clean=True):
     """
@@ -161,7 +176,7 @@ def process_mri(input_file, output_dir, model_path=None, verbose=False, clean=Tr
         print("Processing extracted features...")
     
     results_df = pd.DataFrame(results_list)
-        
+
     # Drop diagnostic columns which are not needed for classification
     results_df = results_df[results_df.columns.drop(list(results_df.filter(regex='diagnostics')))]
     # Reorder the structure column to the start
