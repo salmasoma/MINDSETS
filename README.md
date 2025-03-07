@@ -44,9 +44,11 @@ After running the pipeline, the following output files will be generated:
 
 If you use this project in your research, please cite:
 
-> @article{hassan2024mindsets,
-> title={MINDSETS: Multi-omics Integration with Neuroimaging for Dementia Subtyping and Effective Temporal Study},
-> author={Hassan, Salma and Akaila, Dawlat and Arjemandi, Maryam and Papineni, Vijay and Yaqub, Mohammad},
-> journal={arXiv preprint arXiv:2411.04155},
-> year={2024}
-> }
+```bibtex
+@article{hassan2024mindsets,
+  title={MINDSETS: Multi-omics Integration with Neuroimaging for Dementia Subtyping and Effective Temporal Study},
+  author={Hassan, Salma and Akaila, Dawlat and Arjemandi, Maryam and Papineni, Vijay and Yaqub, Mohammad},
+  journal={arXiv preprint arXiv:2411.04155},
+  year={2024}
+}
+```
