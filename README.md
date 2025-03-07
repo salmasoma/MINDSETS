@@ -6,7 +6,7 @@ This project processes MRI scans for segmentation, radiomics feature extraction,
 
 ## 🏗️ Architecture
 
-![Model Architecture](./Figures/MINDSETS_Arch.png)
+![Model Architecture](Figures/MINDSETS_Arch.png)
 
 The pipeline consists of three main steps:
 
