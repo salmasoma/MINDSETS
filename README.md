@@ -18,17 +18,7 @@ The pipeline consists of three main steps:
 
 Ensure you have the required dependencies installed:
 
-```python
-#Create Environment
-conda create -n MINDSETS python=3.8
-#Activate Environment
-conda activate MINDSETS
-#Clone Repo
-git clone https://github.com/salmasoma/MINDSETS/
-cd MINDSETS
-#Install requirements
-pip install -r requirements.txt
-```
+`pip install -r requirements.txt`
 
 ## 🚀 Usage
 
