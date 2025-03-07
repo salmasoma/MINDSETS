@@ -26,11 +26,15 @@ To run the MRI classification pipeline, use the following command:
 
 ### Basic Usage:
 
-`python scripts/inference.py --input <path_to_mri.nii.gz> --output <output_directory> --model <model_path>`
+```python
+python scripts/inference.py --input <path_to_mri.nii.gz> --output <output_directory> --model <model_path>
+```
 
 ### With verbose output:
 
-`python scripts/inference.py --input <path_to_mri.nii.gz> --output <output_directory> --model <model_path> --verbose`
+```python
+python scripts/inference.py --input <path_to_mri.nii.gz> --output <output_directory> --model <model_path> --verbose
+```
 
 ## 📂 Output Files
 
