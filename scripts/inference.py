@@ -1,7 +1,5 @@
 import argparse
-import nibabel as nib
 import os
-import tempfile
 from predict_synthseg import predict
 import time
 from radiomics import featureextractor
@@ -11,34 +9,6 @@ import numpy as np
 import joblib
 import sys
 from pathlib import Path
-import shutil
-
-def extract_features(label, structure, extractor, mri_image, mask_image):
-    """
-    Extract radiomics features for a specific label and structure
-    
-    Args:
-        label (int): Label value for the structure
-        structure (str): Name of the brain structure
-        extractor: PyRadiomics feature extractor
-        mri_image: SimpleITK image of the MRI
-        mask_image: SimpleITK image of the segmentation mask
-    
-    Returns:
-        dict: Dictionary of extracted features with structure name added
-    """
-    # Create a binary mask for this specific label
-    label_mask = sitk.GetImageFromArray((sitk.GetArrayFromImage(mask_image) == label).astype(int))
-    label_mask.CopyInformation(mask_image)
-    
-    # Check if the mask contains the label
-    if sitk.GetArrayFromImage(label_mask).sum() == 0:
-        raise ValueError(f"Label {label} not found in segmentation mask")
-    
-    # Extract features
-    features = extractor.execute(mri_image, label_mask, label=int(label))
-    features['Structure'] = structure
-    return features
 
 def process_mri(input_file, output_dir, model_path=None, verbose=False, clean=True):
     """
@@ -55,9 +25,6 @@ def process_mri(input_file, output_dir, model_path=None, verbose=False, clean=Tr
         dict: Classification results with class probabilities
     """
     start_time = time.time()
-    
-    # Create a temporary directory for intermediate files
-    temp_dir = tempfile.mkdtemp()
     
     # Define labels and structures
     labels_structures = {
@@ -155,10 +122,15 @@ def process_mri(input_file, output_dir, model_path=None, verbose=False, clean=Tr
         print("Initializing radiomics feature extractor...")
     
     extractor = featureextractor.RadiomicsFeatureExtractor()
+    extractor.enableAllFeatures()
     
     # Load images
     mri_image = sitk.ReadImage(input_file)
     mask_image = sitk.ReadImage(mask_file)
+
+    #print image dimensions
+    print("MRI Image dimensions: ", mri_image.GetSize())
+
     
     # Resample mask to match the size of the MRI image
     if verbose:
@@ -167,17 +139,18 @@ def process_mri(input_file, output_dir, model_path=None, verbose=False, clean=Tr
     mask_image = sitk.Resample(mask_image, mri_image, sitk.Transform(), 
                                sitk.sitkNearestNeighbor, 0.0, mask_image.GetPixelID())
     
+    print("Mask Image dimensions: ", mask_image.GetSize())
     # Extract features for each brain structure
     results_list = []
     if verbose:
         print(f"Extracting features for {len(labels_structures)} brain structures...")
-    
-    for label, structure in labels_structures.items():
+
+    for idx, (label, structure) in enumerate(labels_structures.items()):
         if verbose:
             print(f"  Processing {structure} (label {label})...")
-        
         try:
-            features = extract_features(label, structure, extractor, mri_image, mask_image)
+            features = extractor.execute(mri_image, mask_image, label)
+            features['Structure'] = structure
             results_list.append(features)
         except Exception as e:
             if verbose:
@@ -188,17 +161,17 @@ def process_mri(input_file, output_dir, model_path=None, verbose=False, clean=Tr
         print("Processing extracted features...")
     
     results_df = pd.DataFrame(results_list)
-    
+        
     # Drop diagnostic columns which are not needed for classification
     results_df = results_df[results_df.columns.drop(list(results_df.filter(regex='diagnostics')))]
-    
     # Reorder the structure column to the start
-    if 'Structure' in results_df.columns:
-        results_df = results_df[["Structure"] + [col for col in results_df.columns if col != "Structure"]]
+    results_df = results_df[["Structure"] + [col for col in results_df.columns if col != "Structure"]]
     
     # Save extracted features for reference
     features_file = os.path.join(output_dir, f"{filename_no_ext}_radiomics.csv")
     results_df.to_csv(features_file, index=False)
+
+    results_df = results_df.drop(columns=['Structure'])
     
     if verbose:
         print(f"Extracted {len(results_df)} feature sets across {len(results_list)} structures")
@@ -215,14 +188,8 @@ def process_mri(input_file, output_dir, model_path=None, verbose=False, clean=Tr
     if verbose:
         print("Preparing features for classification...")
     
-    # First ensure all columns are numeric
-    numeric_df = results_df.select_dtypes(include=[np.number])
-    
-    if verbose:
-        print(f"Using {numeric_df.shape[1]} numeric features for classification")
-    
     # Average features across all structures to get a single feature vector
-    X_test = np.mean(numeric_df, axis=0)
+    X_test = np.mean(results_df, axis=0)
     X_test = pd.DataFrame(X_test).T
     
     # Some models might require specific feature sets, handle missing features
@@ -271,16 +238,6 @@ def process_mri(input_file, output_dir, model_path=None, verbose=False, clean=Tr
             print(f"{class_name}: {probs[0][i] * 100:.2f}%")
         print(f"Results saved to {results_file}")
     
-    # Clean up temporary files
-    if clean:
-        if verbose:
-            print("Cleaning up temporary files...")
-        try:
-            shutil.rmtree(temp_dir)
-        except Exception as e:
-            if verbose:
-                print(f"Warning: Failed to clean up temporary directory: {str(e)}")
-    
     return results
 
 def main():
@@ -289,7 +246,7 @@ def main():
                         help='Path to input MRI file (.nii or .nii.gz)')
     parser.add_argument('--output', '-o', default='./output', 
                         help='Directory to store outputs')
-    parser.add_argument('--model', '-m', default='./model_rf.pkl', 
+    parser.add_argument('--model', '-m', default='../models/model_dfg.pkl', 
                         help='Path to classification model (.pkl)')
     parser.add_argument('--verbose', '-v', action='store_true', 
                         help='Print detailed progress')

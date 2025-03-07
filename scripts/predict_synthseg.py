@@ -226,16 +226,6 @@ def predict(path_images,
             if path_qc_scores[0] is not None:
                 print('QC scores saved in:        ' + path_qc_scores[0])
 
-    if robust:
-        print('\nIf you use the new robust version of SynthSeg in a publication, please cite:')
-        print('Robust machine learning segmentation for large-scale analysis of heterogeneous clinical brain MRI '
-              'datasets')
-        print('B. Billot, M. Collin, S.E. Arnold, S. Das, J.E. Iglesias')
-    else:
-        print('\nIf you use this tool in a publication, please cite:')
-        print('SynthSeg: domain randomisation for segmentation of brain MRI scans of any contrast and resolution')
-        print('B. Billot, D.N. Greve, O. Puonti, A. Thielscher, K. Van Leemput, B. Fischl, A.V. Dalca, J.E. Iglesias')
-
     if len(list_errors) > 0:
         print('\nERROR: some problems occurred for the following inputs (see corresponding errors above):')
         for path_error_image in list_errors:
