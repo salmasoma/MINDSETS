@@ -30,7 +30,7 @@ cd MINDSETS
 pip install -r requirements.txt
 ```
 
-**Download model weights:** [Here]([MINDSETS_MRI_Multiclass.pt](https://mbzuaiac-my.sharepoint.com/:u:/g/personal/salma_hassan_mbzuai_ac_ae/ERJ2Tccn3JFBq3AA-Qeydy8B0MVu3xzEKf5kzRZ97faDPg?e=rgBoe9)https://)
+**Download model weights:** [Here](https://mbzuaiac-my.sharepoint.com/:u:/g/personal/salma_hassan_mbzuai_ac_ae/ERJ2Tccn3JFBq3AA-Qeydy8B0MVu3xzEKf5kzRZ97faDPg?e=rgBoe9)
 
 ## 🚀 Usage
 
