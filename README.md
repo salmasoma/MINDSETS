@@ -52,17 +52,27 @@ After running the pipeline, the following output files will be generated:
 
 * 🏷 **Segmentation Mask**: `<span><filename>_synthseg.nii.gz</span>`
 * 📜 **Extracted Features**: `<span><filename>_radiomics.csv</span>`
-* 📑 **Classification Results**: `<span><filename>_classification.txt</span>`
+* 📑 **Classification Results**: `<span><filename>_classification.txt and <filename>_classification.json</span>`
+
+## 📥 Demo & Paper
+
+**Live Demo:** [HuggingFace Space](https://huggingface.co/spaces/SalmaHassan/MINDSETS-APP)
+
+**Paper:** [Link](https://www.nature.com/articles/s41598-025-97674-0https://)
 
 ## 📝 Citation
 
 If you use this project in your research, please cite:
 
 ```bibtex
-@article{hassan2024mindsets,
+@article{hassan2025mindsets,
   title={MINDSETS: Multi-omics Integration with Neuroimaging for Dementia Subtyping and Effective Temporal Study},
   author={Hassan, Salma and Akaila, Dawlat and Arjemandi, Maryam and Papineni, Vijay and Yaqub, Mohammad},
-  journal={arXiv preprint arXiv:2411.04155},
-  year={2024}
+  journal={Scientific Reports},
+  volume={15},
+  number={1},
+  pages={1--12},
+  year={2025},
+  publisher={Nature Publishing Group}
 }
 ```
